@@ -1,0 +1,91 @@
+.blankButton {
+  background:none;
+  border:none;
+  margin:0;
+  padding:0;
+}
+/* Button Cooldown CSS created by Paul Arce */
+/* Button 1 */
+button.cooldown1 {
+  background-color: transparent;
+   min-height: 48px;
+   min-width: 144px;
+   position: relative;
+   margin: 5px;
+   border-radius: 10px;
+   border-style: solid;
+   padding: 0 15px;
+   font-size: 16px;
+   outline: none;
+   overflow: hidden;
+   cursor: pointer;
+}
+button.cooldown1:active, button.cooldown1:focus {
+   outline: none;
+}
+button.cooldown1:disabled {
+   color: #d9d9d9;
+   cursor: default;
+   box-shadow: inset 3px 3px 10px 0px rgba(0, 0, 0, 0.2);
+}
+button.cooldown1:disabled:after {
+   content: '';
+   position: absolute;
+   bottom: 0;
+   width: 100%;
+   left: 0;
+   opacity: 0.5;
+   min-height: 48px;
+   background: #000000;
+   animation: cooldown1 3s linear;
+}
+@keyframes cooldown1 {
+   0% {
+     width: 100%;
+  }
+   100% {
+     width: 0;
+  }
+}
+/* Button 2 */
+button.cooldown2 {
+  background-color: transparent;
+   min-height: 48px;
+   min-width: 144px;
+   position: relative;
+   margin: 5px;
+   border-radius: 10px;
+   border-style: solid;
+   padding: 0 15px;
+   font-size: 16px;
+   outline: none;
+   overflow: hidden;
+   cursor: pointer;
+}
+button.cooldown2:active, button.cooldown2:focus {
+   outline: none;
+}
+button.cooldown2:disabled {
+   color: #d9d9d9;
+   cursor: default;
+   box-shadow: inset 3px 3px 10px 0px rgba(0, 0, 0, 0.2);
+}
+button.cooldown2:disabled:after {
+   content: '';
+   position: absolute;
+   bottom: 0;
+   width: 100%;
+   left: 0;
+   opacity: 0.5;
+   min-height: 48px;
+   background: #000000;
+   animation: cooldown2 6s linear;
+}
+@keyframes cooldown2 {
+   0% {
+     width: 100%;
+  }
+   100% {
+     width: 0;
+  }
+}
