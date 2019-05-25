@@ -1,6 +1,6 @@
 /* Save button */
 function saveGame() {
-	var toBeStringified = { level: level, health: health, stamina: stamina, damage: damage, yourWeapon: yourWeapon, yourWeaponStats: yourWeaponStats, yourArmor: yourArmor, yourArmorStats: yourArmorStats, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions };
+	var toBeStringified = { level: level, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourWeaponStats: yourWeaponStats, yourArmor: yourArmor, yourArmorStats: yourArmorStats, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions };
 	Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30 });
 	$('<li class="list-group-item bg-success"><b>[' + formatAMPM(new Date) + ']</b> Game successfully saved.</li><br />').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
@@ -124,4 +124,44 @@ $(document).on("click", "button.cooldown2", function() {
     	$('#story li:last').remove();
     	tStories--;
     }
+});
+$(document).on("click", "#battleB", function() {
+	$('#battle').modal('toggle');
+	if (curLoc = locations[0]) {
+		console.log('Begin fields combat');
+		initializeCombat();
+	}
+});
+
+$(document).on("click", "#combatButton1", function() {
+	if (health > 1) {
+		var newDamage = Math.floor(Math.random() * ((damage + Math.floor(damage/2)) - (damage - Math.floor(damage/2)))) + (damage - Math.floor(damage/2));
+		enemyHealth -= newDamage;
+		document.getElementById('enemyCombatHP').innerHTML = 'Enemy Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + enemyHealth + '" aria-valuemin="0" aria-valuemax="' + enemyMaxHealth + '" style="width: ' + (enemyHealth/enemyMaxHealth)*100 + '%"></div></div><br />';
+		document.getElementById('enemyCombatSP').innerHTML = 'Enemy Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + enemyStamina + '" aria-valuemin="0" aria-valuemax="' + enemyMaxStamina + '" style="width: ' + (enemyStamina/enemyMaxStamina)*100 + '%"></div></div><br />';
+		$($.parseHTML('<li>- You did ' + newDamage + ' damage to the ' + document.getElementById('enemyName').innerHTML + ' -</li>')).hide().prependTo("#combatLog").fadeIn(1000);
+		tCLogs++;
+		if (tCLogs >= 5) {
+    		$('#combatLog li:last').remove();
+    		tCLogs--;
+    	}
+		if (enemyHealth < 1) {
+			clearInterval(doBattle);
+			document.getElementById('yourName').innerHTML = '';
+			document.getElementById('enemyName').innerHTML = '';
+			document.getElementById('playerCombatHP').innerHTML = '';
+			document.getElementById('playerCombatSP').innerHTML = '';
+			document.getElementById('enemyCombatHP').innerHTML = '';
+			document.getElementById('enemyCombatSP').innerHTML = '';
+			document.getElementById('combatButtons').innerHTML = '';
+			document.getElementById('combatResults').innerHTML = 'You have slain the enemy.';
+		}
+		var btn = $(this);
+    	btn.prop('disabled', true);
+    	setTimeout(function() {
+        	btn.prop('disabled', false);
+    	}, 3000);
+	} else {
+		alert('it appears that you have already died.');
+	}
 });
