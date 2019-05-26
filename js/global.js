@@ -12,6 +12,7 @@ var yourWeapon = weapons[0];
 var armors = ['Worker Rags', 'Leather Armor', 'Guardian Armor'];
 var yourArmor = armors[0];
 // Enemy vars
+var enemyName = "";
 var enemyHealth = 0;
 var enemyMaxHealth = 0;
 var enemyStamina = 0;
@@ -28,8 +29,8 @@ var canMine = 0;
 var doBattle;
 // Locations and current
 var locations = ['The Fields', 'Iron Mines', 'Lake'];
-var locDesc = ['After the establishment of the New Earth, most people were allocated to become workers who toil in the fields.', '', ''];
-var locActions = ['<button id="battleB" class="blankButton">Battle</button> | <button id="restB" class="blankButton">Rest</button> | <button id="searchB" class="blankButton">Search</button>', '', ''];
+var locDesc = ['After the establishment of the New Earth, most people were allocated to become workers who toil in the fields.', 'This mine was abandoned in the Old World due to high traces of toxic chemicals. You\'ve heard of horror stories where lost workers become feral here.', ''];
+var locActions = ['<button id="battleB" class="blankButton">Battle</button> | <button id="restB" class="blankButton">Rest</button> | <button id="searchB" class="blankButton">Search</button>', '<button id="battleB" class="blankButton">Battle</button>', ''];
 var curLoc = locations[0];
 var curDesc = locDesc[0];
 var curActions = locActions[0];
@@ -42,28 +43,3 @@ var check2 = 0;
 var check3 = 0;
 var check4 = 0;
 var check5 = 0;
-/* https://stackoverflow.com/questions/8888491/how-do-you-display-javascript-datetime-in-12-hour-am-pm-format */
-function formatAMPM(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
-}
-
-function clearBattle() {
-	document.getElementById('yourName').innerHTML = '';
-	document.getElementById('enemyName').innerHTML = '';
-	document.getElementById('playerImage').innerHTML = '';
-	$("#playerImageContainer").hide();
-	document.getElementById('enemyImage').innerHTML = '';
-	$("#enemyImageContainer").hide();
-	document.getElementById('playerCombatHP').innerHTML = '';
-	document.getElementById('playerCombatSP').innerHTML = '';
-	document.getElementById('enemyCombatHP').innerHTML = '';
-	document.getElementById('enemyCombatSP').innerHTML = '';
-	document.getElementById('combatButtons').innerHTML = '';
-}

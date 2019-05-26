@@ -2,12 +2,7 @@
 function saveGame() {
 	var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourArmor: yourArmor, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions, check1: check1, check2: check2, check3: check3, check4: check4, check5: check5 };
 	Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30 });
-	$('<li class="list-group-item bg-success"><b>[' + formatAMPM(new Date) + ']</b> Game successfully saved.</li><br />').hide().prependTo("#story").fadeIn(1000);
-	tStories++;
-	if (tStories > 5) {
-    	$('#story li:last').remove();
-    	tStories--;
-    }
+	successChatMessage('Game successfully saved.');
 }
 function silentSaveGame() {
     var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourArmor: yourArmor, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions, check1: check1, check2: check2, check3: check3, check4: check4, check5: check5 };
@@ -16,12 +11,7 @@ function silentSaveGame() {
 /* Purge button */
 function purgeGame() {
 	Cookies.remove('gameData');
-	$('<li class="list-group-item bg-danger"><b>[' + formatAMPM(new Date) + ']</b> Game data purged (cookie deleted). If this is mistake, please SAVE IMMEDIATELY!</li><br />').hide().prependTo("#story").fadeIn(1000);
-	tStories++;
-	if (tStories > 5) {
-    	$('#story li:last').remove();
-    	tStories--;
-    }
+	dangerChatMessage('Game data purged (cookie deleted). If this is mistake, please SAVE IMMEDIATELY!');
 }
 /* Button Cooldown JS created by Paul Arce */
 /* Button 1 */
@@ -47,34 +37,22 @@ $(document).on("click", "button.cooldown1", function() {
     	}
     	switch (true) {
         	case (b1Clicks <= 1):
-        	    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Every day, you work in the fields. This is the meaning of life. At least that\'s what the Party tells you. How long has it been since the Liberation Party exiled the Old Ones? You cannot remember. You should not remember. Those who speak out against the Party vanish and are never seen again.</li><br />').hide().prependTo("#story").fadeIn(1000);
-        	    tStories++;
+        	    chatMessage('Every day, you work in the fields. This is the meaning of life. At least that\'s what the Party tells you. How long has it been since the Liberation Party exiled the Old Ones? You cannot remember. You should not remember. Those who speak out against the Party vanish and are never seen again.');
         	    break;
         	case (b1Clicks == 3):
-        	    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Your back aches, but you continue to harvest the grains. Anything for your comrades.</li><br />').hide().prependTo("#story").fadeIn(1000);
-        	    tStories++;
+        	    chatMessage('Your back aches, but you continue to harvest the grains. Anything for your comrades.');
        	 	    break;
         	case (b1Clicks == 5):
-        	    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> "Work is salvation" they keep telling you. You silently question the truth behind those words.</li><br />').hide().prependTo("#story").fadeIn(1000);
-        	    tStories++;
+        	    chatMessage('"Work is salvation" they keep telling you. You silently question the truth behind those words.');
         	    break;
         	case (b1Clicks == 10):
-        	    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You can vaguely remember life before the Party. Thinking of it would be blasphemous. You quickly push the thoughts away.</li><br />').hide().prependTo("#story").fadeIn(1000);
-       		    tStories++;
+        	    chatMessage('You can vaguely remember life before the Party. Thinking of it would be blasphemous. You quickly push the thoughts away.');
        		    break;
-            /*case (b1Clicks == 15):
-            	$('<li class="list-group-item">[' + formatAMPM(new Date) + '] Is there any more meaning to life? You are serving your comrades. You should be happy.</li><br />').hide().prependTo("#story").fadeIn(1000);
-            	break;*/
         	case (b1Clicks == 15):
-            	$('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> A Guardian comes over. They are the people that protect the workers by exterminating heathens who threaten the Party. He hands you a pickaxe and tells you to go to the local iron mine and bring back a couple ingots.</li><br />').hide().prependTo("#story").fadeIn(1000);
+            	chatMessage('A Guardian comes over. These are the people that protect the workers by exterminating heathens who disrupt the Balance. He hands you a pickaxe and tells you to go to the local iron mine and bring back a couple ingots.');
             	canMine = 1;
-            	tStories++;
             	$('<button class="cooldown2">Mine Iron</button>').hide().appendTo("#buttonsCol").fadeIn(1000);
             	break;
-    	}
-    	if (tStories > 5) {
-    		$('#story li:last').remove();
-    		tStories--;
     	}
     }, 3000);
 });
@@ -101,16 +79,13 @@ $(document).on("click", "button.cooldown2", function() {
     	}
     	switch (true) {
         	case (b2Clicks <= 1):
-        	    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Mining iron is much harder than harvesting grains. You sweat profusely but will do anything for your comrades.</li><br />').hide().prependTo("#story").fadeIn(1000);
-        	    tStories++;
+        	    chatMessage('Mining iron is much harder than harvesting grains. You sweat profusely but will do anything for your comrades. Gathering five should be enough for the Guardian.');
         	    break;
         	case (b2Clicks == 3):
-        	    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Your back aches, but you continue to harvest the grains. Anything for your comrades.</li><br />').hide().prependTo("#story").fadeIn(1000);
-        	    tStories++;
+        	    chatMessage('You hear a shuffling noise further down the mines. It\'s probably nothing. Just a lost field rat. But somehow you feel uneasy.');
         	    break;
         	case (b2Clicks == 5):
-        	    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> "Work is salvation" they keep telling you. You silently question the truth behind those words.</li><br />').hide().prependTo("#story").fadeIn(1000);
-        	    tStories++;
+        	    chatMessage('You hear a growl behind you. You look back and wish you hadn\'t. It\'s time to fight or die.');
         	    break;
     	}
     	if (tStories > 5) {
@@ -132,8 +107,8 @@ $(document).on("click", "#combatButton1", function() {
 	if (health > 1) {
 		var newDamage = Math.floor(Math.random() * ((damage + Math.floor(damage/2)) - (damage - Math.floor(damage/2)))) + (damage - Math.floor(damage/2));
 		enemyHealth -= newDamage;
-		document.getElementById('enemyCombatHP').innerHTML = 'Enemy Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + enemyHealth + '" aria-valuemin="0" aria-valuemax="' + enemyMaxHealth + '" style="width: ' + (enemyHealth/enemyMaxHealth)*100 + '%"></div></div><br />';
-		document.getElementById('enemyCombatSP').innerHTML = 'Enemy Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + enemyStamina + '" aria-valuemin="0" aria-valuemax="' + enemyMaxStamina + '" style="width: ' + (enemyStamina/enemyMaxStamina)*100 + '%"></div></div><br />';
+		selfStatsUpdate();
+        enemyStatsUpdate();
 		$('#enemyIContainer').effect('shake');
 		$($.parseHTML('<li>- You did ' + newDamage + ' damage to the ' + document.getElementById('enemyName').innerHTML + ' -</li>')).hide().prependTo("#combatLog").fadeIn(1000);
 		tCLogs++;
@@ -167,8 +142,8 @@ $(document).on("click", "#combatButton2", function() {
 		var newDamage = Math.floor(Math.random() * ((damage + Math.floor(damage/2)) - (damage - Math.floor(damage/2)))) + (damage - Math.floor(damage/2));
 		enemyHealth -= Math.floor(newDamage*2);
 		stamina -= 25;
-		document.getElementById('enemyCombatHP').innerHTML = 'Enemy Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + enemyHealth + '" aria-valuemin="0" aria-valuemax="' + enemyMaxHealth + '" style="width: ' + (enemyHealth/enemyMaxHealth)*100 + '%"></div></div><br />';
-		document.getElementById('playerCombatSP').innerHTML = 'Your Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + stamina + '" aria-valuemin="0" aria-valuemax="' + maxStamina + '" style="width: ' + (stamina/maxStamina)*100 + '%"></div></div><br />';
+		selfStatsUpdate();
+        enemyStatsUpdate();
 		$('#enemyIContainer').effect('shake');
 		$($.parseHTML('<li>- You did ' + Math.floor(newDamage*2) + ' damage to the ' + document.getElementById('enemyName').innerHTML + ' with a power attack -</li>')).hide().prependTo("#combatLog").fadeIn(1000);
 		tCLogs++;
@@ -202,8 +177,7 @@ $(document).on("click", "#exitCombat", function() {
 	tCLogs = 0;
 	document.getElementById('combatResults').innerHTML = '';
 	document.getElementById('combatLog').innerHTML = '';
-	document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
-    document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
+	charPageUpdate();
 });
 
 $(document).on("click", "#restB", function() {
@@ -217,14 +191,9 @@ $(document).on("click", "#restB", function() {
         if(percent > 25) {
             health = maxHealth;
             stamina = maxStamina;
-            document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
+            charPageUpdate();
             document.getElementById('restResults').innerHTML = 'Rested! <button class="blankButton" id="exitRest">[exit]</button>';
-            $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You feel rested. You quickly get up. The Party does not take laziness lightly.</li><br />').hide().prependTo("#story").fadeIn(1000);
-            tStories++;
-            if (tStories > 5) {
-                $('#story li:last').remove();
-                tStories--;
-            }
+            chatMessage('You feel rested. You quickly get up. The Party does not take laziness lightly.');
             clearInterval(incPercent);
         }
     }, 1000);
@@ -235,37 +204,21 @@ $(document).on("click", "#exitRest", function() {
 });
 
 $(document).on("click", "#searchB", function() {
-    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You are searching the fields...</li><br />').hide().prependTo("#story").fadeIn(1000);
-    tStories++;
-    if (tStories > 5) {
-        $('#story li:last').remove();
-        tStories--;
-    }
+    chatMessage('You are searching the fields...');
     $(':button').prop('disabled', true);
     setTimeout(function() {
         $(':button').prop('disabled', false);
         if (curLoc == locations[0]) {
             var rng = Math.floor(Math.random() * 10) + 1;
             if (rng < 10 || check1 == 1) {
-                $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You don\'t see anything interesting in particular. Just fields all around.</li><br />').hide().prependTo("#story").fadeIn(1000);
-                tStories++;
-                if (tStories > 5) {
-                    $('#story li:last').remove();
-                    tStories--;
-                }
+                chatMessage('You don\'t see anything interesting in particular. Just fields all around.');
             } else {
                 damage += 30;
                 check1 = 1;
                 yourWeapon = weapons[1];
-                document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
-                document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
+                charPageUpdate();
                 saveGame();
-                $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Something on the ground catches your eye. A wooden club is what it appears to be. Workers are not supposed to carry weapons but you quickly shove it into your bag anyway.</li><br />').hide().prependTo("#story").fadeIn(1000);
-                tStories++;
-                if (tStories > 5) {
-                    $('#story li:last').remove();
-                    tStories--;
-                }
+                chatMessage('Something on the ground catches your eye. A wooden club is what it appears to be. Workers are not supposed to carry weapons but you quickly shove it into your bag anyway.');
             }
         }
     }, 3000);
