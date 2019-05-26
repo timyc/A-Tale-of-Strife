@@ -1,6 +1,6 @@
 /* Save button */
 function saveGame() {
-	var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourWeaponStats: yourWeaponStats, yourArmor: yourArmor, yourArmorStats: yourArmorStats, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions };
+	var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourArmor: yourArmor, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions, check1: check1, check2: check2, check3: check3, check4: check4, check5: check5 };
 	Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30 });
 	$('<li class="list-group-item bg-success"><b>[' + formatAMPM(new Date) + ']</b> Game successfully saved.</li><br />').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
@@ -8,6 +8,10 @@ function saveGame() {
     	$('#story li:last').remove();
     	tStories--;
     }
+}
+function silentSaveGame() {
+    var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourArmor: yourArmor, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions, check1: check1, check2: check2, check3: check3, check4: check4, check5: check5 };
+    Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30 });
 }
 /* Purge button */
 function purgeGame() {
@@ -140,6 +144,7 @@ $(document).on("click", "#combatButton1", function() {
 		if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
+            saveGame();
             if (curLoc = locations[0]) {
                 experience += 25;
                 if (experience >= reqExp[level]) {
@@ -147,7 +152,6 @@ $(document).on("click", "#combatButton1", function() {
                 }
             }
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
-		    saveGame();
         }
 		var btn = $(this);
     	btn.prop('disabled', true);
@@ -175,6 +179,7 @@ $(document).on("click", "#combatButton2", function() {
 		if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
+            saveGame();
             if (curLoc = locations[0]) {
                 experience += 25;
                 if (experience >= reqExp[level]) {
@@ -182,7 +187,6 @@ $(document).on("click", "#combatButton2", function() {
                 }
             }
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
-		    saveGame();
         }
 		var btn = $(this);
     	btn.prop('disabled', true);
@@ -228,4 +232,41 @@ $(document).on("click", "#restB", function() {
 
 $(document).on("click", "#exitRest", function() {
     $('#restPage').modal('hide');
+});
+
+$(document).on("click", "#searchB", function() {
+    $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You are searching the fields...</li><br />').hide().prependTo("#story").fadeIn(1000);
+    tStories++;
+    if (tStories > 5) {
+        $('#story li:last').remove();
+        tStories--;
+    }
+    $(':button').prop('disabled', true);
+    setTimeout(function() {
+        $(':button').prop('disabled', false);
+        if (curLoc == locations[0]) {
+            var rng = Math.floor(Math.random() * 10) + 1;
+            if (rng < 10 || check1 == 1) {
+                $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You don\'t see anything interesting in particular. Just fields all around.</li><br />').hide().prependTo("#story").fadeIn(1000);
+                tStories++;
+                if (tStories > 5) {
+                    $('#story li:last').remove();
+                    tStories--;
+                }
+            } else {
+                damage += 30;
+                check1 = 1;
+                yourWeapon = weapons[1];
+                document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
+                document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
+                saveGame();
+                $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Something on the ground catches your eye. A wooden club is what it appears to be. Workers are not supposed to carry weapons but you quickly shove it into your bag anyway.</li><br />').hide().prependTo("#story").fadeIn(1000);
+                tStories++;
+                if (tStories > 5) {
+                    $('#story li:last').remove();
+                    tStories--;
+                }
+            }
+        }
+    }, 3000);
 });

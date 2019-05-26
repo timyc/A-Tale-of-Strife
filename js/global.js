@@ -8,13 +8,9 @@ var stamina = 100;
 var maxStamina = 100;
 var damage = 10;
 var weapons = ['Bare Fists', 'Wooden Club', 'Steel Sword'];
-var weaponStats = [0, 50, 150];
 var yourWeapon = weapons[0];
-var yourWeaponStats = weaponStats[0];
 var armors = ['Worker Rags', 'Leather Armor', 'Guardian Armor'];
-var armorStats = [0, 100, 300];
 var yourArmor = armors[0];
-var yourArmorStats = armorStats[0];
 // Enemy vars
 var enemyHealth = 0;
 var enemyMaxHealth = 0;
@@ -33,7 +29,7 @@ var doBattle;
 // Locations and current
 var locations = ['The Fields', 'Iron Mines', 'Lake'];
 var locDesc = ['After the establishment of the New Earth, most people were allocated to become workers who toil in the fields.', '', ''];
-var locActions = ['<button id="battleB" class="blankButton">Battle</button> | <button id="restB" class="blankButton">Rest</button>', '', ''];
+var locActions = ['<button id="battleB" class="blankButton">Battle</button> | <button id="restB" class="blankButton">Rest</button> | <button id="searchB" class="blankButton">Search</button>', '', ''];
 var curLoc = locations[0];
 var curDesc = locDesc[0];
 var curActions = locActions[0];

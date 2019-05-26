@@ -10,9 +10,7 @@ $(function() {
 		maxStamina = loadData.maxStamina;
 		damage = loadData.damage;
 		yourWeapon = loadData.yourWeapon;
-		yourWeaponStats = loadData.yourWeaponStats;
 		yourArmor = loadData.yourArmor;
-		yourArmorStats = loadData.yourArmorStats;
 		b1Clicks = loadData.b1Clicks;
 		b2Clicks = loadData.b2Clicks;
 		grainR = loadData.grainR;
@@ -20,6 +18,11 @@ $(function() {
 		curLoc = loadData.curLoc;
 		curDesc = loadData.curDesc;
 		curActions = loadData.curActions;
+		check1 = loadData.check1;
+		check2 = loadData.check2;
+		check3 = loadData.check3;
+		check4 = loadData.check4;
+		check5 = loadData.check5;
 	}
 	$($.parseHTML(curLoc)).appendTo("#placeName");
 	$($.parseHTML(curDesc)).appendTo("#placeDesc");
@@ -102,6 +105,7 @@ function initializeCombat() {
 		} else if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
+			saveGame();
 			if (curLoc = locations[0]) {
 				experience += 25;
 				if (experience >= reqExp[level]) {
@@ -109,7 +113,6 @@ function initializeCombat() {
                 }
 			}
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
-			saveGame();
 		}
 	}, 3000);
 }
@@ -141,6 +144,7 @@ function levelUp() {
 	health = maxHealth;
 	stamina = maxStamina;
 	damage += 5;
+	silentSaveGame();
 	document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
 	$($.parseHTML('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You feel refreshed and more powerful.</li><br />')).hide().prependTo("#story").fadeIn(1000);
 	tStories++;
@@ -148,5 +152,4 @@ function levelUp() {
     	$('#story li:last').remove();
     	tStories--;
     }
-	saveGame();
 }
