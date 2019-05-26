@@ -24,111 +24,110 @@ $(function() {
 		check3 = loadData.check3;
 		check4 = loadData.check4;
 		check5 = loadData.check5;
+		tStories = loadData.tStories;
+		document.getElementById('story').innerHTML = loadData.allCMessages;
 	}
-	$($.parseHTML(curLoc)).appendTo("#placeName");
-	$($.parseHTML(curDesc)).appendTo("#placeDesc");
-	$($.parseHTML(curActions)).appendTo("#placeActions");
+	locationCheck();
     document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
     document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
     if (curLoc == locations[0]) {
     	chatMessage('Everywhere you look, farmland dominates your view.');
-    	tStories++;
-		if (tStories > 5) {
-    		$('#story li:last').remove();
-    		tStories--;
-    	}
     } else if (curLoc == locations[1]) {
     	chatMessage('The air here is musty.');
     }
-    if (grainR > 0) {
-    	document.getElementById('resources').innerHTML += "<li id='grainR' class='list-group-item'>Grains: <span id='grainID'>" + grainR + "</span></li>";
-    }
-    if (ironR > 0) {
-    	document.getElementById('resources').innerHTML += "<li id='ironR' class='list-group-item'>Iron ingots: <span id='ironID'>" + ironR + "</span></li>";
-    }
+    resourceCheck();
     if (canMine == 1) {
     	$('<button class="cooldown2">Mine Iron</button>').hide().appendTo("#buttonsCol").fadeIn(1000);
     }
 });
 
 function initializeCombat() {
-	$("#playerImageContainer").show();
-	document.getElementById('yourName').innerHTML = 'You';
-	document.getElementById('playerImage').innerHTML = '<img src="img/player.png" class="img-fluid rounded mx-auto d-block" style="max-height:300px !important;" />';
+	getSelfInfo();
 	selfStatsUpdate();
-	if (curLoc = locations[0]) {
-		enemyName = "Rat";
-		enemyHealth = 50;
-		enemyMaxHealth = enemyHealth;
-		enemyStamina = 100;
-		enemyMaxStamina = enemyStamina;
-		enemyDamage = 5;
+	if (curLoc == locations[0]) {
+		setMonsterInfo("Rat", 50, 100, 5);
 		getEnemyInfo();
-	} else if (ironR == 5 && check2 == 0) {
-		enemyName = "Radioactive Wanderer";
-		enemyHealth = 50;
-		enemyMaxHealth = enemyHealth;
-		enemyStamina = 100;
-		enemyMaxStamina = enemyStamina;
-		enemyDamage = 5;
+	} else if (ironR == 5 && check2 == 0 && curLoc == locations[1]) {
+		setMonsterInfo("Radioactive Wanderer", 500, 100, 35);
+		getEnemyInfo();
+	} else if (curLoc == locations[1]) {
+		setMonsterInfo("Waste Walker", 200, 100, 20);
 		getEnemyInfo();
 	}
 	doBattle = setInterval(function(){ 
-		var newEnemyDamage = Math.floor(Math.random() * ((enemyDamage + Math.floor(enemyDamage/2)) - (enemyDamage - Math.floor(enemyDamage/2)))) + (enemyDamage - Math.floor(enemyDamage/2));
-		health -= newEnemyDamage;
-		selfStatsUpdate();
-		enemyStatsUpdate();
-		$('#playerIContainer').effect('shake');
-		$($.parseHTML('<li>- The ' + document.getElementById('enemyName').innerHTML + ' did ' + newEnemyDamage + ' damage to you -</li>')).hide().prependTo("#combatLog").fadeIn(1000);
-		tCLogs++;
-		if (tCLogs > 5) {
-    		$('#combatLog li:last').remove();
-    		tCLogs--;
+		var rng = Math.floor(Math.random() * 3) + 1;
+		if (rng > 2 & enemyStamina >= 25) {
+			var newEnemyDamage = (Math.floor(Math.random() * ((enemyDamage + Math.floor(enemyDamage/2)) - (enemyDamage - Math.floor(enemyDamage/2)))) + (enemyDamage - Math.floor(enemyDamage/2)))*2;
+			health -= newEnemyDamage;
+			enemyStamina -= 25;
+			selfStatsUpdate();
+			enemyStatsUpdate();
+			$('#playerIContainer').effect('shake');
+			$($.parseHTML('<li>- The ' + document.getElementById('enemyName').innerHTML + ' did ' + newEnemyDamage + ' damage to you with a power attack -</li>')).hide().prependTo("#combatLog").fadeIn(1000);
+			tCLogs++;
+			if (tCLogs > 5) {
+    			$('#combatLog li:last').remove();
+    			tCLogs--;
+    		}
+    	} else {
+    		var newEnemyDamage = Math.floor(Math.random() * ((enemyDamage + Math.floor(enemyDamage/2)) - (enemyDamage - Math.floor(enemyDamage/2)))) + (enemyDamage - Math.floor(enemyDamage/2));
+			health -= newEnemyDamage;
+			selfStatsUpdate();
+			enemyStatsUpdate();
+			$('#playerIContainer').effect('shake');
+			$($.parseHTML('<li>- The ' + document.getElementById('enemyName').innerHTML + ' did ' + newEnemyDamage + ' damage to you -</li>')).hide().prependTo("#combatLog").fadeIn(1000);
+			tCLogs++;
+			if (tCLogs > 5) {
+    			$('#combatLog li:last').remove();
+    			tCLogs--;
+    		}
     	}
 		if (health < 1) {
 			clearInterval(doBattle);
 			clearBattle();
 			document.getElementById('combatResults').innerHTML = 'You died. <button class="blankButton" id="exitCombat">[exit]</button>';
+			if (ironR == 5 && check2 == 0 && curLoc == locations[1]) {
+				ironR--;
+				resourceCheck();
+			}
 			curLoc = locations[0];
         	curDesc = locDesc[0];
         	curActions = locActions[0];
+        	locationCheck();
         	health = 50;
         	stamina = 0;
         	experience = Math.floor(experience/2);
-        	saveGame();
         	chatMessage('You gasp for air as you are pulled away from death\'s embrace. You suddenly remember the serum that the Party injected into every worker. Looking down, you see that your wounds are already fading. Time to work again.');
-		} else if (enemyHealth < 1) {
-			clearInterval(doBattle);
-			clearBattle();
-			saveGame();
-			if (curLoc = locations[0]) {
-				experience += 25;
-				if (experience >= reqExp[level]) {
-                    levelUp();
-                }
-			}
-			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
+			silentSave();
 		}
 	}, 3000);
+}
+
+function getSelfInfo() {
+	$("#playerImageContainer").show();
+	document.getElementById('yourName').innerHTML = 'You';
+	document.getElementById('playerImage').innerHTML = '<img src="img/player.png" class="img-fluid rounded mx-auto d-block" style="max-height:300px !important;" />';
+	document.getElementById('playerCombatHP').innerHTML = 'Your Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + health + '" aria-valuemin="0" aria-valuemax="' + maxHealth + '" style="width: ' + (health/maxHealth)*100 + '%" id="playerHP"></div></div><br />';
+	document.getElementById('playerCombatSP').innerHTML = 'Your Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + stamina + '" aria-valuemin="0" aria-valuemax="' + maxStamina + '" style="width: ' + (stamina/maxStamina)*100 + '%" id="playerSP"></div></div><br />';
 }
 
 function getEnemyInfo() {
 	$("#enemyImageContainer").show();
 	document.getElementById('enemyName').innerHTML = enemyName;
-	document.getElementById('enemyImage').innerHTML = '<img src="img/rat.png" class="img-fluid rounded mx-auto d-block" style="max-height:300px !important;" />';
-	document.getElementById('enemyCombatHP').innerHTML = 'Enemy Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + enemyHealth + '" aria-valuemin="0" aria-valuemax="' + enemyMaxHealth + '" style="width: ' + (enemyHealth/enemyMaxHealth)*100 + '%"></div></div><br />';
-	document.getElementById('enemyCombatSP').innerHTML = 'Enemy Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + enemyStamina + '" aria-valuemin="0" aria-valuemax="' + enemyMaxStamina + '" style="width: ' + (enemyStamina/enemyMaxStamina)*100 + '%"></div></div><br />';
+	document.getElementById('enemyImage').innerHTML = '<img src="img/' + enemyName + '.png" class="img-fluid rounded mx-auto d-block" style="max-height:300px !important;" />';
+	document.getElementById('enemyCombatHP').innerHTML = 'Enemy Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + enemyHealth + '" aria-valuemin="0" aria-valuemax="' + enemyMaxHealth + '" style="width: ' + (enemyHealth/enemyMaxHealth)*100 + '%" id="enemyHP"></div></div><br />';
+	document.getElementById('enemyCombatSP').innerHTML = 'Enemy Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + enemyStamina + '" aria-valuemin="0" aria-valuemax="' + enemyMaxStamina + '" style="width: ' + (enemyStamina/enemyMaxStamina)*100 + '%" id="enemySP"></div></div><br />';
 	document.getElementById('combatButtons').innerHTML = '<button id="combatButton1" align="center">Normal Attack</button>&nbsp; <button id="combatButton2" align="center">Power Attack</button>';
 }
 
 function enemyStatsUpdate() {
-	document.getElementById('enemyCombatHP').innerHTML = 'Enemy Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + enemyHealth + '" aria-valuemin="0" aria-valuemax="' + enemyMaxHealth + '" style="width: ' + (enemyHealth/enemyMaxHealth)*100 + '%"></div></div><br />';
-	document.getElementById('enemyCombatSP').innerHTML = 'Enemy Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + enemyStamina + '" aria-valuemin="0" aria-valuemax="' + enemyMaxStamina + '" style="width: ' + (enemyStamina/enemyMaxStamina)*100 + '%"></div></div><br />';
+	document.getElementById("enemyHP").style.width = (enemyHealth/enemyMaxHealth)*100 + '%';
+	document.getElementById("enemySP").style.width = (enemyStamina/enemyMaxStamina)*100 + '%';
 }
 
 function selfStatsUpdate() {
-	document.getElementById('playerCombatHP').innerHTML = 'Your Health: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="' + health + '" aria-valuemin="0" aria-valuemax="' + maxHealth + '" style="width: ' + (health/maxHealth)*100 + '%"></div></div><br />';
-	document.getElementById('playerCombatSP').innerHTML = 'Your Stamina: <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="' + stamina + '" aria-valuemin="0" aria-valuemax="' + maxStamina + '" style="width: ' + (stamina/maxStamina)*100 + '%"></div></div><br />';
+	document.getElementById("playerHP").style.width = (health/maxHealth)*100 + '%';
+	document.getElementById("playerSP").style.width = (stamina/maxStamina)*100 + '%';
 }
 
 function charPageUpdate() {
@@ -137,13 +136,28 @@ function charPageUpdate() {
 }
 
 function doChat() {
-	var chatContent = document.getElementById('chatSequence').innerHTML;
-	if (check1 == 1) {
-		chatMessage('placeHolder');
+	var chatContent = document.getElementById('chatSequence').value;
+	if (check2 == 1 && check3 == 0 && ironR >= 5 && chatContent.indexOf('iron') !== -1 && curLoc == locations[0]) {
+		ironR -= 5;
+		maxHealth += 100;
+		check3++;
+		charPageUpdate();
+		resourceCheck();
+		chatMessage('You give the Guardian the five ingots and tell him about the creature you saw. He smirks but goes into a nearby building and comes back with what appeared to be leather armor. He hands it to you and tells you to be more careful next time.');
+		silentSave();
 	} else {
 		chatMessage('Logical error.');
 	}
 	document.getElementById('chatSequence').value = "";
+}
+
+function setMonsterInfo(arg1, arg2, arg3, arg4) {
+	enemyName = arg1;
+	enemyHealth = arg2;
+	enemyMaxHealth = enemyHealth;
+	enemyStamina = arg3;
+	enemyMaxStamina = enemyStamina;
+	enemyDamage = arg4;
 }
 
 function levelUp() {
@@ -153,7 +167,6 @@ function levelUp() {
 	health = maxHealth;
 	stamina = maxStamina;
 	damage += 5;
-	silentSaveGame();
 	charPageUpdate();
 	chatMessage('You feel refreshed and more powerful.');
 }
@@ -170,6 +183,7 @@ function formatAMPM(date) {
 }
 
 function clearBattle() {
+	$('#noStaminaAlert').hide();
 	document.getElementById('yourName').innerHTML = '';
 	document.getElementById('enemyName').innerHTML = '';
 	document.getElementById('playerImage').innerHTML = '';
@@ -184,7 +198,7 @@ function clearBattle() {
 }
 
 function chatMessage(arg) {
-	$($.parseHTML('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li><br />')).hide().prependTo("#story").fadeIn(1000);
+	$($.parseHTML('<li class="list-group-item" style="border-radius:0 !important;"><b>[' + formatAMPM(new Date) + ']</b> <span class="font-italic">' + arg + '</span></li><br />')).hide().prependTo("#story").fadeIn(1000);
 	tStories++;
 	if (tStories > 5) {
     	$('#story li:last').remove();
@@ -193,7 +207,7 @@ function chatMessage(arg) {
 }
 
 function successChatMessage(arg) {
-	$('<li class="list-group-item bg-success"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li><br />').hide().prependTo("#story").fadeIn(1000);
+	$('<li class="list-group-item bg-success" style="border-radius:0 !important;"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li><br />').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
 	if (tStories > 5) {
     	$('#story li:last').remove();
@@ -202,10 +216,121 @@ function successChatMessage(arg) {
 }
 
 function dangerChatMessage(arg) {
-	$('<li class="list-group-item bg-danger"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li><br />').hide().prependTo("#story").fadeIn(1000);
+	$('<li class="list-group-item bg-danger" style="border-radius:0 !important;"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li><br />').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
 	if (tStories > 5) {
     	$('#story li:last').remove();
     	tStories--;
     }
+}
+
+function checkCheck2() {
+	if (ironR == 5 && check2 == 0 && curLoc == locations[1]) {
+		check2 = 1;
+		chatMessage('With a final strike, the <i>thing</i> falls and moves no more. You cannot believe such horrors can exist.');
+		$(':button').prop('disabled', true);
+		setTimeout( function() {
+			cutscene1();
+			$(':button').prop('disabled', false);
+		}, 6000);
+	}
+}
+
+function resourceCheck() {
+	document.getElementById('resources').innerHTML = "";
+	if (grainR > 0) {
+    	document.getElementById('resources').innerHTML += "<li id='grainR' class='list-group-item'>Grains: <span id='grainID'>" + grainR + "</span></li>";
+    }
+    if (ironR > 0) {
+    	document.getElementById('resources').innerHTML += "<li id='ironR' class='list-group-item'>Iron ingots: <span id='ironID'>" + ironR + "</span></li>";
+    }
+}
+
+function locationCheck() {
+	document.getElementById('placeName').innerHTML = "";
+	document.getElementById('placeDesc').innerHTML = "";
+	document.getElementById('placeActions').innerHTML = "";
+	$($.parseHTML(curLoc)).appendTo("#placeName");
+	$($.parseHTML(curDesc)).appendTo("#placeDesc");
+	$($.parseHTML(curActions)).appendTo("#placeActions");
+}
+
+function gotoLocation(arg) {
+	if (arg == 1 && canMine == 0) {
+		$('#lockedAlert').show();
+		return;
+	}
+	$('#lockedAlert').hide();
+	curLoc = locations[arg];
+	curDesc = locDesc[arg];
+	curActions = locActions[arg];
+	locationCheck();
+	chatMessage('You have arrived at ' + curLoc);
+	$('#worldMap').modal('hide');
+}
+
+function giveEXP() {
+	if (curLoc == locations[0]) {
+		experience += 25;
+		if (experience >= reqExp[level]) {
+            levelUp();
+        }
+	} else if (curLoc == locations[1]) {
+		experience += 45;
+		if (experience >= reqExp[level]) {
+            levelUp();
+        }
+	}
+}
+
+function cutscene1() {
+	$('#main').fadeTo(500, 0, function() {  
+        document.getElementById('main').style.display = "none";
+        $('#cutscenes').fadeTo(500, 1, function() {
+            document.getElementById('cutscenes').style.display = "block";
+            setTimeout(function() { 
+            	$($.parseHTML('<span class="font-weight-bold" style="font-size: 2em">17 years ago</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+        		setTimeout(function() { 
+            		$('#cutsceneText').fadeTo(500, 0, function() {
+            			document.getElementById('cutsceneText').innerHTML = "";
+            		});
+            		setTimeout(function() { 
+            			$('#cutsceneText').fadeTo(500, 1, function() {
+            				$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">It was an ordinary day for John. He had just come home from work.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            			});
+            			setTimeout(function() {
+            				$('#cutsceneText').fadeTo(500, 0, function() {
+            					document.getElementById('cutsceneText').innerHTML = "";
+            				});
+            				setTimeout(function() {
+            					$('#cutsceneText').fadeTo(500, 1, function() {
+            						$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">Like every other ordinary American, he turned on his TV as he sat on his couch eating dinner.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            					});
+            					setTimeout(function() {
+            						$('#cutsceneText').fadeTo(500, 0, function() {
+            							document.getElementById('cutsceneText').innerHTML = "";
+            						});
+            						setTimeout(function() {
+            							$('#cutsceneText').fadeTo(500, 1, function() {
+            								$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">That day was not like any of the others.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            							});
+            							setTimeout(function() {
+            								$('#cutsceneText').fadeTo(1000, 0, function() {
+            									document.getElementById('cutsceneText').innerHTML = "";
+            									document.getElementById('cutscenes').style.display = "none";
+            									$('#main').fadeTo(3000, 1, function() {
+            										document.getElementById('main').style.display = "";
+            									});
+            								});
+            							}, 7500);
+            						}, 1000);
+            					}, 7500);
+            				}, 1000);
+            			}, 7500);
+        			}, 1000);
+        		}, 3500);
+        	}, 1000);
+        });   
+    });
+    silentSave();
 }

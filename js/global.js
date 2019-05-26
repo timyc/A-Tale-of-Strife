@@ -28,8 +28,8 @@ var ironR = 0;
 var canMine = 0;
 var doBattle;
 // Locations and current
-var locations = ['The Fields', 'Iron Mines', 'Lake'];
-var locDesc = ['After the establishment of the New Earth, most people were allocated to become workers who toil in the fields.', 'This mine was abandoned in the Old World due to high traces of toxic chemicals. You\'ve heard of horror stories where lost workers become feral here.', ''];
+var locations = ['The Fields', 'Iron Mines', 'The Lake'];
+var locDesc = ['After the establishment of the New Earth, most people were allocated to become workers who toil in the fields.', 'This mine was abandoned in the Old World due to high traces of toxic chemicals. You\'ve heard of horror stories where lost workers become feral here.', 'The lake is forbidden to everyone except the highest ranking Party members. You have heard of rumours about this place. After the Party took control, women were used as test subjects.'];
 var locActions = ['<button id="battleB" class="blankButton">Battle</button> | <button id="restB" class="blankButton">Rest</button> | <button id="searchB" class="blankButton">Search</button>', '<button id="battleB" class="blankButton">Battle</button>', ''];
 var curLoc = locations[0];
 var curDesc = locDesc[0];

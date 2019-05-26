@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 	</head>
 	<body>
+		<!-- Begin main -->
 		<div class="container" id="main">
 			<nav class="navbar">
   				<b class="navbar-brand">A Tale of Strife</b>
@@ -21,7 +22,7 @@
 					<div class="card mb-2" style="width: 18rem;">
    						<div class="card-body">
       						<h5 class="card-title" id="placeName"></h5>
-      						<h6 class="card-subtitle mb-2 text-muted" id="placeDesc"></h6>
+      						<h6 class="card-subtitle mb-2 text-muted text-justify" id="placeDesc"></h6>
       						<p class="card-text" id="placeActions"></p>
    						</div>
 					</div>
@@ -48,6 +49,7 @@
         		<center><span class="text-muted"><button class="blankButton" onclick="saveGame()">Save</button> | Load | <button class="blankButton" onclick="purgeGame()">Purge Data</button></span></center>
     		</footer>
 		</div>
+		<!-- End main -->
 		<!-- Begin world map -->
 		<div class="modal fade" id="worldMap" tabindex="-1" role="dialog" aria-hidden="true">
   			<div class="modal-dialog" role="document">
@@ -60,20 +62,25 @@
       				</div>
       				<div class="modal-body">
       					<div class="row">
+      						<div class="col">
+      							<div class="alert alert-danger text-center" role="alert" id="lockedAlert" style="display:none;">
+  									You can't go there yet!
+								</div>
+      						</div>
+      					</div>
+      					<div class="row">
      						<div class="col-4">
     							<div class="list-group" id="list-tab" role="tablist">
       								<a class="list-group-item list-group-item-action active" data-toggle="list" href="#map-fields" role="tab" aria-controls="home">The Fields</a>
       								<a class="list-group-item list-group-item-action" data-toggle="list" href="#map-mines" role="tab" aria-controls="profile">Iron Mines</a>
       								<a class="list-group-item list-group-item-action" data-toggle="list" href="#map-lake" role="tab" aria-controls="messages">The Lake</a>
-      								<a class="list-group-item list-group-item-action" data-toggle="list" href="#map-idk" role="tab" aria-controls="settings">nothing</a>
     							</div>
   							</div>
   							<div class="col-8">
     							<div class="tab-content" id="nav-tabContent">
-      								<div class="tab-pane fade show active" id="map-fields" role="tabpanel"><u>Hostile Creatures</u><br /> - Rat: <i>They are generally harmless unless provoked.</i></div>
-      								<div class="tab-pane fade" id="map-mines" role="tabpanel">Hostile Creatures: ???</div>
-      								<div class="tab-pane fade" id="map-lake" role="tabpanel">Hostile Creatures: ???</div>
-      								<div class="tab-pane fade" id="map-idk" role="tabpanel">Hostile Creatures: ???</div>
+      								<div class="tab-pane fade show active" id="map-fields" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(0)">[go there]</button></center><br /><u>Hostile Creatures</u><br /> - Rat: <i>They are generally harmless unless provoked.</i></div>
+      								<div class="tab-pane fade" id="map-mines" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(1)">[go there]</button></center><br /><u>Hostile Creatures</u><br /> - Waste Walker: <i>Nuclear warfare certainly produces some interesting creatures. A mix between octopi and cattle, the waste walker is highly aggressive and can inflict severe damage.</i><br /> - ???</i></div>
+      								<div class="tab-pane fade" id="map-lake" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(2)">[go there]</button></center><br />Hostile Creatures: ???</div>
     							</div>
   							</div>
 						</div>
@@ -119,6 +126,13 @@
         				<h5 class="modal-title">Battle</h5>
       				</div>
       				<div class="modal-body">
+      					<div class="row">
+      						<div class="col">
+      							<div class="alert alert-danger text-center" role="alert" id="noStaminaAlert" style="display:none;">
+  									Not enough stamina!
+								</div>
+							</div>
+      					</div>
       					<div class="row">
       						<div class="col">
       							<h2 align="center" id="yourName">You</h2>
@@ -167,6 +181,13 @@
   			</div>
 		</div>
 		<!-- End rest -->
+		<!-- Begin cutscenes -->
+		<div class="container" id="cutscenes" style="display:none;opacity:0;height:100vh;overflow:hidden">
+			<center>
+				<div class="align-middle" id="cutsceneText" style="line-height:100vh"></div>
+			</center>
+		</div>
+		<!-- End cutscenes -->
 		<script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"></script>
