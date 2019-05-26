@@ -131,3 +131,45 @@ button.cooldown2:disabled:after {
      width: 0;
   }
 }
+/* Combat Button 2 */
+#combatButton2 {
+  background-color: transparent;
+   min-height: 48px;
+   min-width: 144px;
+   position: relative;
+   margin: 5px;
+   border-radius: 10px;
+   border-style: solid;
+   padding: 0 15px;
+   font-size: 16px;
+   outline: none;
+   overflow: hidden;
+   cursor: pointer;
+}
+#combatButton2:active, #combatButton2:focus {
+   outline: none;
+}
+#combatButton2:disabled {
+   color: #d9d9d9;
+   cursor: default;
+   box-shadow: inset 3px 3px 10px 0px rgba(0, 0, 0, 0.2);
+}
+#combatButton2:disabled:after {
+   content: '';
+   position: absolute;
+   bottom: 0;
+   width: 100%;
+   left: 0;
+   opacity: 0.5;
+   min-height: 48px;
+   background: #000000;
+   animation: combatButton2 8s linear;
+}
+@keyframes combatButton2 {
+   0% {
+     width: 100%;
+  }
+   100% {
+     width: 0;
+  }
+}

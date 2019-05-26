@@ -8,7 +8,7 @@ var damage = 10;
 var weapons = ['Bare Fists', 'Wooden Club', 'Steel Sword'];
 var weaponStats = [0, 50, 150];
 var yourWeapon = weapons[0];
-var yourWeaponDamage = weaponStats[0];
+var yourWeaponStats = weaponStats[0];
 var armors = ['Worker Rags', 'Leather Armor', 'Guardian Armor'];
 var armorStats = [0, 100, 300];
 var yourArmor = armors[0];
@@ -48,4 +48,18 @@ function formatAMPM(date) {
     minutes = minutes < 10 ? '0' + minutes : minutes;
     var strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
+}
+
+function clearBattle() {
+	document.getElementById('yourName').innerHTML = '';
+	document.getElementById('enemyName').innerHTML = '';
+	document.getElementById('playerImage').innerHTML = '';
+	$("#playerImageContainer").hide();
+	document.getElementById('enemyImage').innerHTML = '';
+	$("#enemyImageContainer").hide();
+	document.getElementById('playerCombatHP').innerHTML = '';
+	document.getElementById('playerCombatSP').innerHTML = '';
+	document.getElementById('enemyCombatHP').innerHTML = '';
+	document.getElementById('enemyCombatSP').innerHTML = '';
+	document.getElementById('combatButtons').innerHTML = '';
 }
