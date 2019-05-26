@@ -1,5 +1,7 @@
 // Character vars
 var level = 1;
+var experience = 0;
+var reqExp = [0, 100, 200, 300, 500, 700, 1000, 1500, 2000, 3000, 999999999];
 var health = 100;
 var maxHealth = 100;
 var stamina = 100;
@@ -31,13 +33,19 @@ var doBattle;
 // Locations and current
 var locations = ['The Fields', 'Iron Mines', 'Lake'];
 var locDesc = ['After the establishment of the New Earth, most people were allocated to become workers who toil in the fields.', '', ''];
-var locActions = ['<button id="battleB" class="blankButton">Battle</button> | <button id="searchB" class="blankButton">Search</button>', '', ''];
+var locActions = ['<button id="battleB" class="blankButton">Battle</button> | <button id="restB" class="blankButton">Rest</button>', '', ''];
 var curLoc = locations[0];
 var curDesc = locDesc[0];
 var curActions = locActions[0];
 // Total amount of messages in stories
 var tStories = 0;
 var tCLogs = 0;
+// Checkpoints
+var check1 = 0;
+var check2 = 0;
+var check3 = 0;
+var check4 = 0;
+var check5 = 0;
 /* https://stackoverflow.com/questions/8888491/how-do-you-display-javascript-datetime-in-12-hour-am-pm-format */
 function formatAMPM(date) {
     var hours = date.getHours();

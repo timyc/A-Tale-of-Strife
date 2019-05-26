@@ -3,11 +3,12 @@ $(function() {
 	if (Cookies.get('gameData')) {
 		var loadData = Cookies.getJSON('gameData');
 		level = loadData.level;
-		health = ((loadData.health)*level)+yourArmorStats;
-		maxHealth = ((loadData.maxHealth)*level)+yourArmorStats;
-		stamina = ((loadData.stamina)*level);
-		maxStamina = ((loadData.maxStamina)*level);
-		damage = (loadData.damage)+yourWeaponStats;
+		experience = loadData.experience;
+		health = loadData.health;
+		maxHealth = loadData.maxHealth;
+		stamina = loadData.stamina;
+		maxStamina = loadData.maxStamina;
+		damage = loadData.damage;
 		yourWeapon = loadData.yourWeapon;
 		yourWeaponStats = loadData.yourWeaponStats;
 		yourArmor = loadData.yourArmor;
@@ -23,7 +24,7 @@ $(function() {
 	$($.parseHTML(curLoc)).appendTo("#placeName");
 	$($.parseHTML(curDesc)).appendTo("#placeDesc");
 	$($.parseHTML(curActions)).appendTo("#placeActions");
-    document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + '</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
+    document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
     document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
     if (curLoc == locations[0]) {
     	$('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Wherever you look, farmland dominates your view.</li><br />').hide().prependTo("#story").fadeIn(1000);
@@ -85,10 +86,40 @@ function initializeCombat() {
 			clearInterval(doBattle);
 			clearBattle();
 			document.getElementById('combatResults').innerHTML = 'You died. <button class="blankButton" id="exitCombat">[exit]</button>';
+			saveGame();
 		} else if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
+			if (curLoc = locations[0]) {
+				experience += 25;
+				if (experience >= reqExp[level]) {
+                    levelUp();
+                }
+			}
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
+			saveGame();
 		}
 	}, 3000);
+}
+
+function doChat() {
+	var chatContent = document.getElementById('chatSequence').innerHTML;
+	document.getElementById('chatSequence').value = "";
+}
+
+function levelUp() {
+	level++;
+	experience = 0;
+	maxHealth += 100;
+	health = maxHealth;
+	stamina = maxStamina;
+	damage += 5;
+	document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
+	$($.parseHTML('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You feel refreshed and more powerful.</li><br />')).hide().prependTo("#story").fadeIn(1000);
+	tStories++;
+	if (tStories > 5) {
+    	$('#story li:last').remove();
+    	tStories--;
+    }
+	saveGame();
 }

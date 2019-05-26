@@ -1,6 +1,6 @@
 /* Save button */
 function saveGame() {
-	var toBeStringified = { level: level, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourWeaponStats: yourWeaponStats, yourArmor: yourArmor, yourArmorStats: yourArmorStats, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions };
+	var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourWeaponStats: yourWeaponStats, yourArmor: yourArmor, yourArmorStats: yourArmorStats, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions };
 	Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30 });
 	$('<li class="list-group-item bg-success"><b>[' + formatAMPM(new Date) + ']</b> Game successfully saved.</li><br />').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
@@ -140,8 +140,15 @@ $(document).on("click", "#combatButton1", function() {
 		if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
+            if (curLoc = locations[0]) {
+                experience += 25;
+                if (experience >= reqExp[level]) {
+                    levelUp();
+                }
+            }
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
-		}
+		    saveGame();
+        }
 		var btn = $(this);
     	btn.prop('disabled', true);
     	setTimeout(function() {
@@ -168,8 +175,15 @@ $(document).on("click", "#combatButton2", function() {
 		if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
+            if (curLoc = locations[0]) {
+                experience += 25;
+                if (experience >= reqExp[level]) {
+                    levelUp();
+                }
+            }
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
-		}
+		    saveGame();
+        }
 		var btn = $(this);
     	btn.prop('disabled', true);
     	setTimeout(function() {
@@ -184,6 +198,34 @@ $(document).on("click", "#exitCombat", function() {
 	tCLogs = 0;
 	document.getElementById('combatResults').innerHTML = '';
 	document.getElementById('combatLog').innerHTML = '';
-	document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + '</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
+	document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
     document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
+});
+
+$(document).on("click", "#restB", function() {
+    $('#restPage').modal({backdrop: 'static', keyboard: false});
+    $('#restPage').modal('toggle');
+    document.getElementById('restResults').innerHTML = 'Resting...<br /> <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30" id="restBar"></div></div>';
+    var percent = 1;
+    var incPercent = setInterval(function(){
+        document.getElementById("restBar").style.width = (percent*4) + '%';
+        percent++;
+        if(percent > 25) {
+            health = maxHealth;
+            stamina = maxStamina;
+            document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
+            document.getElementById('restResults').innerHTML = 'Rested! <button class="blankButton" id="exitRest">[exit]</button>';
+            $('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You feel rested. You quickly get up. The Party does not take laziness lightly.</li><br />').hide().prependTo("#story").fadeIn(1000);
+            tStories++;
+            if (tStories > 5) {
+                $('#story li:last').remove();
+                tStories--;
+            }
+            clearInterval(incPercent);
+        }
+    }, 1000);
+}); 
+
+$(document).on("click", "#exitRest", function() {
+    $('#restPage').modal('hide');
 });

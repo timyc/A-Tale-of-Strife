@@ -30,6 +30,12 @@
 					</div>
 				</div>
 				<div class="col-6">
+					<div class="input-group mb-3">
+  						<input type="text" class="form-control" placeholder="Your command" id="chatSequence">
+  						<div class="input-group-append">
+    						<button class="btn btn-outline-secondary" onclick="doChat()">Do This</button>
+  						</div>
+					</div>
 					<ul id="story" class="list-group"></ul>
 				</div>
 				<div class="col">
@@ -147,6 +153,20 @@
   			</div>
 		</div>
 		<!-- End battle -->
+		<!-- Begin rest -->
+		<div class="modal fade" id="restPage" tabindex="-1" role="dialog" aria-hidden="true">
+  			<div class="modal-dialog" role="document">
+    			<div class="modal-content">
+      				<div class="modal-header">
+        				<h5 class="modal-title">Rest</h5>
+      				</div>
+      				<div class="modal-body">
+      					<h1 id="restResults" class="font-weight-bold text-center"></h1>
+       				</div>
+    			</div>
+  			</div>
+		</div>
+		<!-- End rest -->
 		<script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"></script>
