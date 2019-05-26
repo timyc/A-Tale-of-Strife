@@ -4,7 +4,7 @@ function saveGame() {
 	Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30 });
 	$('<li class="list-group-item bg-success"><b>[' + formatAMPM(new Date) + ']</b> Game successfully saved.</li><br />').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
-	if (tStories >= 5) {
+	if (tStories > 5) {
     	$('#story li:last').remove();
     	tStories--;
     }
@@ -14,7 +14,7 @@ function purgeGame() {
 	Cookies.remove('gameData');
 	$('<li class="list-group-item bg-danger"><b>[' + formatAMPM(new Date) + ']</b> Game data purged (cookie deleted). If this is mistake, please SAVE IMMEDIATELY!</li><br />').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
-	if (tStories >= 5) {
+	if (tStories > 5) {
     	$('#story li:last').remove();
     	tStories--;
     }

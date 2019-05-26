@@ -27,7 +27,7 @@ $(function() {
     document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
     document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
     if (curLoc == locations[0]) {
-    	$('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Wherever you look, farmland dominates your view.</li><br />').hide().prependTo("#story").fadeIn(1000);
+    	$('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Everywhere you look, farmland dominates your view.</li><br />').hide().prependTo("#story").fadeIn(1000);
     	tStories++;
 		if (tStories > 5) {
     		$('#story li:last').remove();
@@ -86,7 +86,19 @@ function initializeCombat() {
 			clearInterval(doBattle);
 			clearBattle();
 			document.getElementById('combatResults').innerHTML = 'You died. <button class="blankButton" id="exitCombat">[exit]</button>';
-			saveGame();
+			curLoc = locations[0];
+        	curDesc = locDesc[0];
+        	curActions = locActions[0];
+        	health = 50;
+        	stamina = 0;
+        	experience = Math.floor(experience/2);
+        	saveGame();
+        	$('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> You gasp for air as you are pulled away from death\'s embrace. You suddenly remember the serum that the Party injected into every worker. Looking down, you see that your wounds are already fading. Time to work again.</li><br />').hide().prependTo("#story").fadeIn(1000);
+        	tStories++;
+        	if (tStories > 5) {
+        	    $('#story li:last').remove();
+        	    tStories--;
+        	}
 		} else if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
@@ -104,6 +116,21 @@ function initializeCombat() {
 
 function doChat() {
 	var chatContent = document.getElementById('chatSequence').innerHTML;
+	if (check1 == 1) {
+		$('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Placeholder.</li><br />').hide().prependTo("#story").fadeIn(1000);
+        tStories++;
+        if (tStories > 5) {
+            $('#story li:last').remove();
+            tStories--;
+        }
+	} else {
+		$('<li class="list-group-item"><b>[' + formatAMPM(new Date) + ']</b> Logic error.</li><br />').hide().prependTo("#story").fadeIn(1000);
+        tStories++;
+        if (tStories > 5) {
+            $('#story li:last').remove();
+            tStories--;
+        }
+	}
 	document.getElementById('chatSequence').value = "";
 }
 
