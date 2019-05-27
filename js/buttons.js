@@ -178,10 +178,10 @@ $(document).on("click", "#combatButton1", function() {
 		if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
-            checkCheck2();
-            checkCheck4();
             giveEXP();
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
+            checkCheck2();
+            checkCheck4();
         }
 		var btn = $(this);
     	btn.prop('disabled', true);
@@ -210,10 +210,10 @@ $(document).on("click", "#combatButton2", function() {
 		if (enemyHealth < 1) {
 			clearInterval(doBattle);
 			clearBattle();
-            checkCheck2();
-            checkCheck4();
             giveEXP();
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
+            checkCheck2();
+            checkCheck4();
         }
 		var btn = $(this);
     	btn.prop('disabled', true);
