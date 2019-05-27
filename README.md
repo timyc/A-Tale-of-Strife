@@ -1,4 +1,4 @@
-# Text-RPG
+# A-Tale-of-Strife
 
 Preview: https://atos.7im.me/
 
