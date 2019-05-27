@@ -217,7 +217,7 @@ function clearBattle() {
 }
 
 function chatMessage(arg) {
-	$($.parseHTML('<li class="list-group-item" style="border-radius:0 !important;"><b>[' + formatAMPM(new Date) + ']</b> <span class="font-italic">' + arg + '</span></li><br />')).hide().prependTo("#story").fadeIn(1000);
+	$($.parseHTML('<li class="list-group-item" style="border-radius:0 !important; border:none !important;"><b>[' + formatAMPM(new Date) + ']</b> <span class="font-italic">' + arg + '</span></li>')).hide().prependTo("#story").fadeIn(1000);
 	tStories++;
 	if (tStories > 5) {
     	$('#story li:last').remove();
@@ -226,7 +226,7 @@ function chatMessage(arg) {
 }
 
 function successChatMessage(arg) {
-	$('<li class="list-group-item bg-success" style="border-radius:0 !important;"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li><br />').hide().prependTo("#story").fadeIn(1000);
+	$('<li class="list-group-item bg-success" style="border-radius:0 !important; border:none !important;"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li>').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
 	if (tStories > 5) {
     	$('#story li:last').remove();
@@ -235,7 +235,7 @@ function successChatMessage(arg) {
 }
 
 function dangerChatMessage(arg) {
-	$('<li class="list-group-item bg-danger" style="border-radius:0 !important;"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li><br />').hide().prependTo("#story").fadeIn(1000);
+	$('<li class="list-group-item bg-danger" style="border-radius:0 !important; border:none !important;"><b>[' + formatAMPM(new Date) + ']</b> ' + arg + '</li>').hide().prependTo("#story").fadeIn(1000);
 	tStories++;
 	if (tStories > 5) {
     	$('#story li:last').remove();
