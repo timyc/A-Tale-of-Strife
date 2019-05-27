@@ -45,7 +45,7 @@ $(document).on("click", "button.cooldown1", function() {
                     chatMessage('You can vaguely remember life before the Party. Thinking of it would be blasphemous. You quickly push the thoughts away.');
                     break;
                 case (b1Clicks == 15):
-                    chatMessage('A Guardian comes over. These are the people that protect the workers by exterminating heathens who disrupt the Balance. He hands you a small dull pickaxe and tells you to go to the local iron mine and bring back a couple ingots.');
+                    chatMessage('A Guardian comes over. These are the people that protect the workers by exterminating heathens who disrupt the Balance. He hands you a small dull pickaxe and tells you to go to the local iron mine and bring back a couple ingots. ([map] -> Iron Mines -> [go there])');
                     canMine = 1;
                     $('<button class="cooldown2">Mine Iron</button>').hide().appendTo("#buttonsCol").fadeIn(1000);
                     break;
@@ -264,7 +264,7 @@ $(document).on("click", "#searchB", function() {
         if (curLoc == locations[0]) {
             var rng = Math.floor(Math.random() * 10) + 1;
             if (rng < 10 || check1 == 1) {
-                chatMessage('You don\'t see anything interesting in particular. Just fields all around.');
+                chatMessage('You don\'t see anything interesting in particular. Just fields all around. Certain items have a low chance of being found.');
             } else {
                 damage += 30;
                 check1 = 1;
