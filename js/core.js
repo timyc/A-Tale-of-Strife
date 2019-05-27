@@ -263,6 +263,8 @@ function checkCheck2() {
 function checkCheck4() {
 	if (fishR == 4 && check4 == 0 && curLoc == locations[2]) {
 		check4 = 1;
+		document.getElementById('combatResults').innerHTML = '';
+		document.getElementById('combatLog').innerHTML = '';
 		$('#battle').modal('hide');
 		$(':button').prop('disabled', true);
 		setTimeout( function() {
