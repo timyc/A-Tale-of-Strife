@@ -21,11 +21,14 @@ var enemyDamage = 0;
 // Total clicks to progress story
 var b1Clicks = 0;
 var b2Clicks = 0;
+var b3Clicks = 0;
 // Resources
 var grainR = 0;
 var ironR = 0;
+var fishR = 0;
 // Booleans
 var canMine = 0;
+var canFish = 0;
 var doBattle;
 // Locations and current
 var locations = ['The Fields', 'Iron Mines', 'The Lake'];

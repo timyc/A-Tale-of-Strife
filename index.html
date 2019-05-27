@@ -8,12 +8,30 @@
 		<link rel="stylesheet" href="css/buttons.css">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+		<link href="https://fonts.googleapis.com/css?family=Courgette&display=swap" rel="stylesheet">
+		<style>
+			#fancyFont {
+				font-family: 'Courgette', cursive;
+			}
+		</style>
 	</head>
 	<body>
+		<!-- Begin start screen -->
+		<div class="container" id="startScreen" style="height:100vh;overflow:hidden">
+			<div class="col mt-5">
+				<div class="card mt-5" style="line-height:50vh;border:none !important;">
+  					<div class="card-body">
+  						<center><h1 class="card-title" id="fancyFont">A Tale of Strife</h1></center>
+  						<center><button class="btn btn-outline-secondary" id="startGameButton">Start Game</button></center>
+  					</div>
+  				</div>
+  			</div>
+		</div>
+		<!-- End start screen -->
 		<!-- Begin main -->
-		<div class="container" id="main">
+		<div class="container" id="main" style="display:none;opacity:0">
 			<nav class="navbar">
-  				<b class="navbar-brand">A Tale of Strife (unfinished)</b>
+  				<b class="navbar-brand">A Tale of Strife</b>
   				<button id="toggleCharpage" class="blankButton" data-toggle="modal" data-target="#charPage">[character]</button>
   				<button id="toggleMap" class="blankButton" data-toggle="modal" data-target="#worldMap">[map]</button>
 			</nav>
@@ -46,7 +64,7 @@
 			</div>
 			<footer class="container">
 				<hr>
-        		<center><span class="text-muted"><button class="blankButton" onclick="saveGame()">Save</button> | Load | <button class="blankButton" onclick="purgeGame()">Purge Data</button></span></center>
+        		<center><span class="text-muted"><button class="blankButton" id="saveGameButton">Save</button> | Load | <button class="blankButton" onclick="purgeGame()">Purge Data</button> | <button class="blankButton" onclick="cutscene3()">Debug cutscene</button></span></center>
     		</footer>
 		</div>
 		<!-- End main -->
@@ -78,9 +96,9 @@
   							</div>
   							<div class="col-8">
     							<div class="tab-content" id="nav-tabContent">
-      								<div class="tab-pane fade show active" id="map-fields" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(0)">[go there]</button></center><br /><u>Hostile Creatures</u><br /> - Rat: <i>They are generally harmless unless provoked.</i></div>
-      								<div class="tab-pane fade" id="map-mines" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(1)">[go there]</button></center><br /><u>Hostile Creatures</u><br /> - Waste Walker: <i>Nuclear warfare certainly produces some interesting creatures. A mix between octopi and cattle, the waste walker is highly aggressive and can inflict severe damage.</i><br /> - ???</i></div>
-      								<div class="tab-pane fade" id="map-lake" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(2)">[go there]</button></center><br />Hostile Creatures: ???</div>
+      								<div class="tab-pane fade show active" id="map-fields" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(0)">[go there]</button></center><br /><u>Hostile Entities</u><br /> - Rat: <i>They are generally harmless unless provoked.</i></div>
+      								<div class="tab-pane fade" id="map-mines" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(1)">[go there]</button></center><br /><u>Hostile Entities</u><br /> - Waste Walker: <i>Nuclear warfare certainly produces some interesting creatures. A mix between octopi and cattle, the waste walker is highly aggressive and can inflict severe damage.</i><br /> - ???</i></div>
+      								<div class="tab-pane fade" id="map-lake" role="tabpanel"><center><button class="blankButton" onclick="gotoLocation(2)">[go there]</button></center><br /><u>Hostile Entities</u><br /> - ???</div>
     							</div>
   							</div>
 						</div>

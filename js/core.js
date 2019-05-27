@@ -13,9 +13,12 @@ $(function() {
 		yourArmor = loadData.yourArmor;
 		b1Clicks = loadData.b1Clicks;
 		b2Clicks = loadData.b2Clicks;
+		b3Clicks = loadData.b3Clicks;
 		grainR = loadData.grainR;
 		ironR = loadData.ironR;
+		fishR = loadData.fishR;
 		canMine = loadData.canMine;
+		canFish = loadData.canFish;
 		curLoc = loadData.curLoc;
 		curDesc = loadData.curDesc;
 		curActions = loadData.curActions;
@@ -31,13 +34,18 @@ $(function() {
     document.getElementById('stats').innerHTML = '<li class="list-group-item">Level: ' + level + ' (' + experience + '/' + reqExp[level] + ')</li><li class="list-group-item">Health: ' + health + '/' + maxHealth + '</li><li class="list-group-item">Stamina: ' + stamina + '/' + maxStamina + '</li><li class="list-group-item">Damage: ' + damage + '</li>';
     document.getElementById('equipments').innerHTML = '<li class="list-group-item">Weapon: ' + yourWeapon + '</li><li class="list-group-item">Armor: ' + yourArmor + '</li>';
     if (curLoc == locations[0]) {
-    	chatMessage('Everywhere you look, farmland dominates your view.');
+    	chatMessage('Everywhere you look, farmland dominates your view. You should harvest some grains.');
     } else if (curLoc == locations[1]) {
     	chatMessage('The air here is musty.');
+    } else if (curLoc == locations[2]) {
+    	chatMessage('The lake gleams beautifully in the afternoon sunlight.');
     }
     resourceCheck();
     if (canMine == 1) {
     	$('<button class="cooldown2">Mine Iron</button>').hide().appendTo("#buttonsCol").fadeIn(1000);
+    }
+    if (canFish == 1) {
+    	$('<button class="cooldown3">Fish</button>').hide().appendTo("#buttonsCol").fadeIn(1000);
     }
 });
 
@@ -52,6 +60,9 @@ function initializeCombat() {
 		getEnemyInfo();
 	} else if (curLoc == locations[1]) {
 		setMonsterInfo("Waste Walker", 200, 100, 20);
+		getEnemyInfo();
+	} else if (curLoc == locations[2] && fishR == 4) {
+		setMonsterInfo("Siren", 1500, 100, 2);
 		getEnemyInfo();
 	}
 	doBattle = setInterval(function(){ 
@@ -88,6 +99,10 @@ function initializeCombat() {
 			document.getElementById('combatResults').innerHTML = 'You died. <button class="blankButton" id="exitCombat">[exit]</button>';
 			if (ironR == 5 && check2 == 0 && curLoc == locations[1]) {
 				ironR--;
+				resourceCheck();
+			}
+			if (fishR == 4 && curLoc == locations[2]) {
+				fishR--;
 				resourceCheck();
 			}
 			curLoc = locations[0];
@@ -138,13 +153,17 @@ function charPageUpdate() {
 function doChat() {
 	var chatContent = document.getElementById('chatSequence').value;
 	if (check2 == 1 && check3 == 0 && ironR >= 5 && chatContent.indexOf('iron') !== -1 && curLoc == locations[0]) {
-		ironR -= 5;
-		maxHealth += 100;
-		check3++;
-		charPageUpdate();
-		resourceCheck();
-		chatMessage('You give the Guardian the five ingots and tell him about the creature you saw. He smirks but goes into a nearby building and comes back with what appeared to be leather armor. He hands it to you and tells you to be more careful next time.');
-		silentSave();
+		chatMessage('You give the Guardian the five ingots and tell him about the creature you saw. He smirks but goes into a nearby building and comes back with what appeared to be leather armor. He hands it to you and tells you to get back to working on the fields.');
+		setTimeout(function() {
+			ironR -= 5;
+			maxHealth += 100;
+			check3++;
+			yourArmor = armors[1];
+			b1Clicks = 15;
+			charPageUpdate();
+			resourceCheck();
+			silentSave();
+		}, 1000);
 	} else {
 		chatMessage('Logical error.');
 	}
@@ -227,11 +246,28 @@ function dangerChatMessage(arg) {
 function checkCheck2() {
 	if (ironR == 5 && check2 == 0 && curLoc == locations[1]) {
 		check2 = 1;
-		chatMessage('With a final strike, the <i>thing</i> falls and moves no more. You cannot believe such horrors can exist.');
+		$('#battle').modal('hide');
+		tCLogs = 0;
+		document.getElementById('combatResults').innerHTML = '';
+		document.getElementById('combatLog').innerHTML = '';
+		charPageUpdate();
+		chatMessage('With a final strike, the <i>thing</i> falls and moves no more. You cannot believe such horrors can exist. You should probably head back to the field and give the Guardian the iron ingots.');
 		$(':button').prop('disabled', true);
 		setTimeout( function() {
-			cutscene1();
 			$(':button').prop('disabled', false);
+			cutscene1();
+		}, 6000);
+	}
+}
+
+function checkCheck4() {
+	if (fishR == 4 && check4 == 0 && curLoc == locations[2]) {
+		check4 = 1;
+		$('#battle').modal('hide');
+		$(':button').prop('disabled', true);
+		setTimeout( function() {
+			$(':button').prop('disabled', false);
+			cutscene3();
 		}, 6000);
 	}
 }
@@ -243,6 +279,9 @@ function resourceCheck() {
     }
     if (ironR > 0) {
     	document.getElementById('resources').innerHTML += "<li id='ironR' class='list-group-item'>Iron ingots: <span id='ironID'>" + ironR + "</span></li>";
+    }
+    if (fishR > 0) {
+    	document.getElementById('resources').innerHTML += "<li id='fishR' class='list-group-item'>Fish: <span id='fishID'>" + fishR + "</span></li>";
     }
 }
 
@@ -259,13 +298,16 @@ function gotoLocation(arg) {
 	if (arg == 1 && canMine == 0) {
 		$('#lockedAlert').show();
 		return;
+	} else if (arg == 2 && canFish == 0) {
+		$('#lockedAlert').show();
+		return;
 	}
 	$('#lockedAlert').hide();
 	curLoc = locations[arg];
 	curDesc = locDesc[arg];
 	curActions = locActions[arg];
 	locationCheck();
-	chatMessage('You have arrived at ' + curLoc);
+	chatMessage('You have arrived at ' + curLoc.toLowerCase() + '.');
 	$('#worldMap').modal('hide');
 }
 
@@ -280,6 +322,11 @@ function giveEXP() {
 		if (experience >= reqExp[level]) {
             levelUp();
         }
+	} else if (curLoc == locations[2]) {
+		experience += 100;
+		if (experience >= reqExp[level]) {
+			levelUp();
+		}
 	}
 }
 
@@ -287,16 +334,18 @@ function cutscene1() {
 	$('#main').fadeTo(500, 0, function() {  
         document.getElementById('main').style.display = "none";
         $('#cutscenes').fadeTo(500, 1, function() {
-            document.getElementById('cutscenes').style.display = "block";
+            document.getElementById('cutscenes').style.display = "";
             setTimeout(function() { 
-            	$($.parseHTML('<span class="font-weight-bold" style="font-size: 2em">17 years ago</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            	$('#cutsceneText').fadeTo(500, 1, function() {
+            		$($.parseHTML('<span class="font-weight-bold" style="font-size: 2em">17 years ago</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+        		});
         		setTimeout(function() { 
             		$('#cutsceneText').fadeTo(500, 0, function() {
             			document.getElementById('cutsceneText').innerHTML = "";
             		});
             		setTimeout(function() { 
             			$('#cutsceneText').fadeTo(500, 1, function() {
-            				$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">It was an ordinary day for John. He had just come home from work.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            				$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">It was an ordinary day for Jared. He had just come home from work.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
             			});
             			setTimeout(function() {
             				$('#cutsceneText').fadeTo(500, 0, function() {
@@ -333,4 +382,128 @@ function cutscene1() {
         });   
     });
     silentSave();
+}
+
+function cutscene2() {
+	$('#main').fadeTo(500, 0, function() {  
+        document.getElementById('main').style.display = "none";
+        $('#cutscenes').fadeTo(500, 1, function() {
+            document.getElementById('cutscenes').style.display = "";
+            setTimeout(function() { 
+            	$('#cutsceneText').fadeTo(500, 1, function() {
+            		$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">They came and slaughtered my dog.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+        		});
+        		setTimeout(function() { 
+            		$('#cutsceneText').fadeTo(500, 0, function() {
+            			document.getElementById('cutsceneText').innerHTML = "";
+            		});
+            		setTimeout(function() { 
+            			$('#cutsceneText').fadeTo(500, 1, function() {
+            				$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">They took my beloved son.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            			});
+            			setTimeout(function() {
+            				$('#cutsceneText').fadeTo(500, 0, function() {
+            					document.getElementById('cutsceneText').innerHTML = "";
+            				});
+            				setTimeout(function() {
+            					$('#cutsceneText').fadeTo(500, 1, function() {
+            						$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">My memories are all I have left of them.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            					});
+            					setTimeout(function() {
+            						$('#cutsceneText').fadeTo(500, 0, function() {
+            							document.getElementById('cutsceneText').innerHTML = "";
+            						});
+            						setTimeout(function() {
+            							$('#cutsceneText').fadeTo(500, 1, function() {
+            								$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">But they will soon take them too.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            							});
+            							setTimeout(function() {
+            								$('#cutsceneText').fadeTo(1000, 0, function() {
+            									document.getElementById('cutsceneText').innerHTML = "";
+            									document.getElementById('cutscenes').style.display = "none";
+            									$('#main').fadeTo(2000, 1, function() {
+            										document.getElementById('main').style.display = "";
+            										$('#battle').modal({
+                        								backdrop: 'static',
+                        								keyboard: false
+                    								});
+                    								$('#battle').modal('toggle');
+                    								initializeCombat();
+            									});
+            								});
+            							}, 7500);
+            						}, 1000);
+            					}, 7500);
+            				}, 1000);
+            			}, 7500);
+        			}, 1000);
+        		}, 7500);
+        	}, 1000);
+        });   
+    });
+}
+
+function cutscene3() {
+	$('#main').fadeTo(500, 0, function() {  
+        document.getElementById('main').style.display = "none";
+        $('#cutscenes').fadeTo(500, 1, function() {
+            document.getElementById('cutscenes').style.display = "";
+            setTimeout(function() { 
+            	$('#cutsceneText').fadeTo(500, 1, function() {
+            		$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">As you deliver the killing blow to the siren, the world starts to spin.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+        		});
+        		setTimeout(function() { 
+            		$('#cutsceneText').fadeTo(500, 0, function() {
+            			document.getElementById('cutsceneText').innerHTML = "";
+            		});
+            		setTimeout(function() { 
+            			$('#cutsceneText').fadeTo(500, 1, function() {
+            				$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">As the spinning subsides, you look back down at your bloodied hands.</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            			});
+            			setTimeout(function() {
+            				$('#cutsceneText').fadeTo(500, 0, function() {
+            					document.getElementById('cutsceneText').innerHTML = "";
+            				});
+            				setTimeout(function() {
+            					$('#cutsceneText').fadeTo(500, 1, function() {
+            						$($.parseHTML('<span class="font-italic font-weight-bold" style="font-size: 1.5em">What have you done?</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            					});
+            					setTimeout(function() {
+            						$('#cutsceneText').fadeTo(500, 0, function() {
+            							document.getElementById('cutsceneText').innerHTML = "";
+            						});
+            						setTimeout(function() {
+            							$('#cutsceneText').fadeTo(500, 1, function() {
+            								$($.parseHTML('<span class="font-italic" style="font-size: 1.5em"><img src="img/newspaper.png" style="max-height:100vh !important;" /></span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            							});
+            							setTimeout(function() {
+            								$('#cutsceneText').fadeTo(500, 0, function() {
+            									document.getElementById('cutsceneText').innerHTML = "";
+            								});
+            								setTimeout(function() {
+            									$('#cutsceneText').fadeTo(500, 1, function() {
+            										$($.parseHTML('<span class="font-italic" style="font-size: 1.5em">Fin</span>')).hide().prependTo("#cutsceneText").fadeIn(1000);
+            									});
+            									setTimeout(function() {
+            										$('#cutsceneText').fadeTo(1000, 0, function() {
+            											document.getElementById('cutsceneText').innerHTML = "";
+            											document.getElementById('cutscenes').style.display = "none";
+            											$('#startScreen').fadeTo(2000, 1, function() {
+            												document.getElementById('startScreen').style.display = "";
+            												purgeGame();
+            												location.reload();
+            											});
+            										});
+            									}, 5000);
+            								}, 1000);
+            							}, 7500);
+            						}, 1000);
+            					}, 7500);
+            				}, 1000);
+            			}, 7500);
+        			}, 1000);
+        		}, 7500);
+        	}, 1000);
+        });   
+    });
 }

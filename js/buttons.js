@@ -1,21 +1,19 @@
 /* Save button */
-function saveGame() {
-    var allCMessages = document.getElementById('story').innerHTML;
-	var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourArmor: yourArmor, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions, check1: check1, check2: check2, check3: check3, check4: check4, check5: check5, allCMessages: allCMessages, tStories: tStories };
-	Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30, path: '' });
-	successChatMessage('Game successfully saved.');
-}
 function silentSave() {
     var allCMessages = document.getElementById('story').innerHTML;
-    var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourArmor: yourArmor, b1Clicks: b1Clicks, b2Clicks: b2Clicks, grainR: grainR, ironR: ironR, canMine: canMine, curLoc: curLoc, curDesc: curDesc, curActions: curActions, check1: check1, check2: check2, check3: check3, check4: check4, check5: check5, allCMessages: allCMessages, tStories: tStories };
+    var toBeStringified = { level: level, experience: experience, health: health, maxHealth: maxHealth, stamina: stamina, maxStamina: maxStamina, damage: damage, yourWeapon: yourWeapon, yourArmor: yourArmor, b1Clicks: b1Clicks, b2Clicks: b2Clicks, b3Clicks: b3Clicks, grainR: grainR, ironR: ironR, fishR: fishR, canMine: canMine, canFish: canFish, curLoc: curLoc, curDesc: curDesc, curActions: curActions, check1: check1, check2: check2, check3: check3, check4: check4, check5: check5, allCMessages: allCMessages, tStories: tStories };
     Cookies.set('gameData', JSON.stringify(toBeStringified), { expires: 30, path: '' });
 }
+
+$(document).on("click", "#saveGameButton", function() {
+    silentSave();
+    successChatMessage('Game successfully saved.');
+});
 /* Purge button */
 function purgeGame() {
 	Cookies.remove('gameData');
 	dangerChatMessage('Game data purged (cookie deleted). If this is mistake, please SAVE IMMEDIATELY!');
 }
-/* Button Cooldown JS created by Paul Arce */
 /* Button 1 */
 $(document).on("click", "button.cooldown1", function() {
     if (curLoc == locations[0]) {
@@ -51,13 +49,24 @@ $(document).on("click", "button.cooldown1", function() {
                     canMine = 1;
                     $('<button class="cooldown2">Mine Iron</button>').hide().appendTo("#buttonsCol").fadeIn(1000);
                     break;
+                case (b1Clicks == 18 && check3 == 1):
+                    chatMessage('You can\'t stop thinking about what you saw in the mines. What other kinds of abominable creatures are there?');
+                    break;
+                case (b1Clicks == 23 && check3 == 1):
+                    chatMessage('"Do not let your mind wander off to where it doesn\'t belong," the Party officials would tell the workers. You should obey the Party, right?');
+                    break;
+                case (b1Clicks == 30 && check3 == 1):
+                    chatMessage('Unable to suppress your blasphemous thoughts, you look over into the distance, where you can barely make out a forest. When was the last time you had a decent meal? You begin walking towards the lake.');
+                    canFish = 1;
+                    $('<button class="cooldown3">Fish</button>').hide().appendTo("#buttonsCol").fadeIn(1000);
+                    break;
             }
         }, 3000);
     } else {
         chatMessage('You can\'t harvest grains without being in the fields first!');
     }
 });
-/* Button 2*/
+/* Button 2 */
 $(document).on("click", "button.cooldown2", function() {
     if (curLoc == locations[1]) {
         b2Clicks++;
@@ -93,11 +102,47 @@ $(document).on("click", "button.cooldown2", function() {
                     });
                     $('#battle').modal('toggle');
                     initializeCombat();
-                }, 4000);
+                }, 6000);
             }
         }, 6000);
     } else {
         chatMessage('You can\'t mine for iron without being in the mines first!');
+    }
+});
+/* Button 3 */
+$(document).on("click", "button.cooldown3", function() {
+    if (curLoc == locations[2]) {
+        b3Clicks++;
+        fishR++;
+        curLoc = locations[2];
+        curDesc = locDesc[2];
+        curActions = locActions[2];
+        var btn = $(this);
+        btn.prop('disabled', true);
+        setTimeout(function() {
+            btn.prop('disabled', false);
+            if (!document.body.contains(document.getElementById('fishR'))) {
+                document.getElementById('resources').innerHTML += "<li id='fishR' class='list-group-item'>Fish: <span id='fishID'>" + fishR + "</span></li>";
+            } else {
+                document.getElementById('fishR').innerHTML = "Fish: <span id='ironID'>" + fishR + "</span>";
+            }
+            switch (true) {
+                case (b3Clicks <= 1):
+                    chatMessage('Fishing looked much easier on television. With the amount of effort you are putting in, you\'d need at least four fish to satiate yourself.');
+                    break;
+                case (b3Clicks == 2):
+                    chatMessage('A soft hum fills the air. You cannot locate the source of it, but you enjoy the sound. Women... they are of the Old World. The Party only allows one day a year for the Mating Ritual, exclusive to the strongest workers.');
+                    break;
+                case (b3Clicks == 3):
+                    chatMessage('Are these voices coming from the lake? What is going on?');
+                    break;
+            }
+            if (fishR == 4 && check4 == 0) {
+                cutscene2();
+            }
+        }, 15000);
+    } else {
+        chatMessage('You can\'t fish without being near a water source first!');
     }
 });
 /* Battle button */
@@ -105,6 +150,15 @@ $(document).on("click", "#battleB", function() {
 	$('#battle').modal({backdrop: 'static', keyboard: false});
 	$('#battle').modal('toggle');
 	initializeCombat();
+});
+
+$(document).on("click", "#startGameButton", function() {
+    $('#startScreen').fadeTo(500, 0, function() {  
+        document.getElementById('startScreen').style.display = "none";
+        $('#main').fadeTo(1000, 1, function() {
+            document.getElementById('main').style.display = "";
+        });   
+    });
 });
 
 $(document).on("click", "#combatButton1", function() {
@@ -125,8 +179,8 @@ $(document).on("click", "#combatButton1", function() {
 			clearInterval(doBattle);
 			clearBattle();
             checkCheck2();
+            checkCheck4();
             giveEXP();
-            silentSave();
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
         }
 		var btn = $(this);
@@ -157,8 +211,8 @@ $(document).on("click", "#combatButton2", function() {
 			clearInterval(doBattle);
 			clearBattle();
             checkCheck2();
+            checkCheck4();
             giveEXP();
-            silentSave();
 			document.getElementById('combatResults').innerHTML = 'You have slain the enemy. <button class="blankButton" id="exitCombat">[exit]</button>';
         }
 		var btn = $(this);
